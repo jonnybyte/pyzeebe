@@ -94,6 +94,9 @@ class ZeebeWorker(ZeebeTaskRouter):
         except asyncio.CancelledError:
             logger.info("Zeebe worker was stopped")
             return
+        # To prevent crashing when channel creation is unsucessful.
+        except grpc.aio.UsageError as e:
+            logger.error(f"Got grpc.aio.UsageError: {e}")
 
     async def stop(self) -> None:
         """
